@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="history-section">
+
+    <div class="history-header">
+
+        <h1>
+
+            <i class="fa-solid fa-circle-info"></i>
+
+            Prediction Details
+
+        </h1>
+
+    </div>
+
+    <div class="history-card" style="max-width:700px;margin:auto;">
+
+        <h2>
+
+            {{ prediction.filename }}
+
+        </h2>
+
+        <hr>
+
+        <p>
+
+            <strong>Predicted Genre:</strong>
+
+            {{ prediction.predicted_genre }}
+
+        </p>
+
+        <p>
+
+            <strong>Confidence:</strong>
+
+            {{ "%.2f"|format(prediction.confidence) }}%
+
+        </p>
+
+        <div class="confidence-bar">
+
+            <div
+
+                class="confidence-fill"
+
+                style="width:{{ prediction.confidence }}%;"
+
+            ></div>
+
+        </div>
+
+        <br>
+
+        <p>
+
+            <strong>Date:</strong>
+
+            {{ prediction.created_at.strftime("%d %B %Y") }}
+
+        </p>
+
+        <p>
+
+            <strong>Time:</strong>
+
+            {{ prediction.created_at.strftime("%I:%M %p") }}
+
+        </p>
+
+        <br>
+
+        <a
+
+            href="{{ url_for('main.history') }}"
+
+            class="view-btn"
+
+        >
+
+            ← Back to History
+
+        </a>
+
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    const bar=document.querySelector(".confidence-fill");
+
+    if(bar){
+
+        const width=bar.style.width;
+
+        bar.style.width="0";
+
+        setTimeout(()=>{
+
+            bar.style.transition="width 1s ease";
+
+            bar.style.width=width;
+
+        },300);
+
+    }
+
+});
+
+</script>
+
+{% endblock %}

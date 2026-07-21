@@ -1,0 +1,515 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="history-section">
+
+    <div class="history-header">
+
+        <h1>
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+            Prediction History
+
+        </h1>
+
+        <p>
+
+            Browse, search and manage all AI genre predictions.
+
+        </p>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Statistics -->
+    <!-- ========================= -->
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-music"></i>
+
+            </div>
+
+            <h2>{{ total_predictions }}</h2>
+
+            <p>Total Predictions</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-chart-line"></i>
+
+            </div>
+
+            <h2>
+
+                {{ "%.1f"|format(average_confidence) }}%
+
+            </h2>
+
+            <p>Average Confidence</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+
+                <i class="fa-solid fa-brain"></i>
+
+            </div>
+
+            <h2>AI</h2>
+
+            <p>Genre Classifier</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Toolbar -->
+    <!-- ========================= -->
+
+    <div class="history-toolbar">
+
+        <input
+
+            type="text"
+
+            id="searchInput"
+
+            placeholder="Search filename..."
+
+        >
+
+
+        <select id="genreFilter">
+
+            <option value="all">
+
+                All Genres
+
+            </option>
+
+            <option value="blues">Blues</option>
+
+            <option value="classical">Classical</option>
+
+            <option value="country">Country</option>
+
+            <option value="disco">Disco</option>
+
+            <option value="hiphop">Hiphop</option>
+
+            <option value="jazz">Jazz</option>
+
+            <option value="metal">Metal</option>
+
+            <option value="pop">Pop</option>
+
+            <option value="reggae">Reggae</option>
+
+            <option value="rock">Rock</option>
+
+        </select>
+
+
+        <select id="sortSelect">
+
+            <option value="new">
+
+                Newest First
+
+            </option>
+
+            <option value="old">
+
+                Oldest First
+
+            </option>
+
+            <option value="high">
+
+                Highest Confidence
+
+            </option>
+
+            <option value="low">
+
+                Lowest Confidence
+
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Action Buttons -->
+    <!-- ========================= -->
+
+    <div class="history-actions">
+
+        <a
+
+            href="{{ url_for('main.export_csv') }}"
+
+            class="export-btn"
+
+        >
+
+            <i class="fa-solid fa-file-csv"></i>
+
+            Export CSV
+
+        </a>
+
+
+        <form
+
+            action="{{ url_for('main.clear_history') }}"
+
+            method="POST"
+
+            onsubmit="return confirm('Delete entire prediction history?');"
+
+        >
+
+            <button
+
+                type="submit"
+
+                class="clear-btn"
+
+            >
+
+                <i class="fa-solid fa-trash-can"></i>
+
+                Clear History
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if predictions.items %}
+
+    <div class="history-grid">
+
+
+                {% for prediction in predictions.items %}
+
+        <div
+
+            class="history-card"
+
+            data-name="{{ prediction.filename|lower }}"
+
+            data-genre="{{ prediction.predicted_genre|lower }}"
+
+            data-confidence="{{ prediction.confidence }}"
+
+            data-date="{{ prediction.created_at.timestamp() }}"
+
+        >
+
+            <!-- ========================= -->
+            <!-- Card Header -->
+            <!-- ========================= -->
+
+            <div class="card-header">
+
+                <div class="genre-badge">
+
+                    <i class="fa-solid fa-compact-disc"></i>
+
+                    {{ prediction.predicted_genre|title }}
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Song Name -->
+            <!-- ========================= -->
+
+            <div class="song-name">
+
+                <h3>
+
+                    {{ prediction.filename }}
+
+                </h3>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Prediction Details -->
+            <!-- ========================= -->
+
+            <div class="prediction-info">
+
+                <div class="info-row">
+
+                    <span>
+
+                        Confidence
+
+                    </span>
+
+                    <strong>
+
+                        {{ "%.2f"|format(prediction.confidence) }}%
+
+                    </strong>
+
+                </div>
+
+
+                <div class="confidence-bar">
+
+                    <div
+
+                        class="confidence-fill"
+
+                        style="width: {{ prediction.confidence }}%;"
+
+                    ></div>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+
+                        Predicted Genre
+
+                    </span>
+
+                    <strong>
+
+                        {{ prediction.predicted_genre|title }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+
+                        Date
+
+                    </span>
+
+                    <strong>
+
+                        {{ prediction.created_at.strftime("%d %b %Y") }}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span>
+
+                        Time
+
+                    </span>
+
+                    <strong>
+
+                        {{ prediction.created_at.strftime("%I:%M %p") }}
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- Card Buttons -->
+            <!-- ========================= -->
+
+            <div class="card-actions">
+
+                <a
+
+                    href="{{ url_for('main.prediction_details', id=prediction.id) }}"
+
+                    class="view-btn"
+
+                >
+
+                    <i class="fa-solid fa-eye"></i>
+
+                    View
+
+                </a>
+
+
+                <form
+
+                    action="{{ url_for('main.delete_prediction', id=prediction.id) }}"
+
+                    method="POST"
+
+                    onsubmit="return confirm('Delete this prediction?');"
+
+                >
+
+                    <button
+
+                        type="submit"
+
+                        class="delete-btn"
+
+                    >
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Delete
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-history">
+
+        <i class="fa-solid fa-music"></i>
+
+        <h2>
+
+            No Predictions Found
+
+        </h2>
+
+        <p>
+
+            Upload your first audio file and the prediction history
+            will appear here.
+
+        </p>
+
+        <a
+
+            href="{{ url_for('main.index') }}"
+
+            class="view-btn"
+
+        >
+
+            Upload Music
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+    <!-- ========================= -->
+    <!-- Pagination -->
+    <!-- ========================= -->
+
+    {% if predictions.pages > 1 %}
+
+    <div class="pagination">
+
+        {% if predictions.has_prev %}
+
+        <a
+
+            href="{{ url_for('main.history', page=predictions.prev_num) }}"
+
+            class="page-btn"
+
+        >
+
+            <i class="fa-solid fa-angle-left"></i>
+
+            Previous
+
+        </a>
+
+        {% endif %}
+
+
+        <span class="page-info">
+
+            Page
+
+            <strong>{{ predictions.page }}</strong>
+
+            of
+
+            <strong>{{ predictions.pages }}</strong>
+
+        </span>
+
+
+        {% if predictions.has_next %}
+
+        <a
+
+            href="{{ url_for('main.history', page=predictions.next_num) }}"
+
+            class="page-btn"
+
+        >
+
+            Next
+
+            <i class="fa-solid fa-angle-right"></i>
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='js/history.js') }}"></script>
+
+{% endblock %}    

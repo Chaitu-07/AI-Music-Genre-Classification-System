@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Home
+
+{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="hero-left">
+
+        <h1>
+
+            AI Music Genre
+
+            <span>
+
+                Classification
+
+            </span>
+
+        </h1>
+
+        <p>
+
+            Upload your music file and let Artificial Intelligence
+            identify its genre in just a few seconds.
+
+            Supported formats:
+
+            <strong>.AU</strong>
+
+            and
+
+            <strong>.WAV</strong>
+
+        </p>
+
+    </div>
+
+</section>
+
+<section class="upload-section">
+
+    <form
+
+        action="/predict"
+
+        method="POST"
+
+        enctype="multipart/form-data"
+
+        id="uploadForm"
+
+    >
+
+        <div class="upload-box" id="dropArea">
+
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+
+            <h2>
+
+                Drag & Drop Audio Here
+
+            </h2>
+
+            <p>
+
+                or
+
+            </p>
+
+            <label class="browse-btn">
+
+                Browse File
+
+                <input
+
+                    type="file"
+
+                    id="audio"
+
+                    name="audio"
+
+                    accept=".au,.wav"
+
+                    hidden
+
+                    required
+
+                >
+
+            </label>
+
+            <div id="fileName">
+
+                No file selected
+
+            </div>
+
+        </div>
+
+        <div class="audio-preview">
+
+            <audio
+
+                id="audioPlayer"
+
+                controls
+
+                style="display:none;">
+
+            </audio>
+
+        </div>
+
+        <button
+
+            class="predict-btn"
+
+            type="submit"
+
+        >
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            Predict Genre
+
+        </button>
+
+    </form>
+
+</section>
+
+{% if prediction %}
+
+<section class="result-section">
+
+    <div class="result-card">
+
+        <h2>
+
+            Prediction Result
+
+        </h2>
+
+        <div class="genre-name">
+
+            {{ prediction }}
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endif %}
+
+<section class="features">
+
+    <div class="feature-card">
+
+        <i class="fa-solid fa-brain"></i>
+
+        <h3>
+
+            Machine Learning
+
+        </h3>
+
+        <p>
+
+            Built using Scikit-Learn and Support Vector Machine.
+
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <i class="fa-solid fa-wave-square"></i>
+
+        <h3>
+
+            Audio Features
+
+        </h3>
+
+        <p>
+
+            MFCC, Chroma, Spectral Centroid,
+            RMS Energy and Zero Crossing Rate.
+
+        </p>
+
+    </div>
+
+    <div class="feature-card">
+
+        <i class="fa-solid fa-bolt"></i>
+
+        <h3>
+
+            Fast Prediction
+
+        </h3>
+
+        <p>
+
+            Predict music genres within a few seconds.
+
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}
+{% block scripts %}
+
+<script src="{{ url_for('static',
+filename='js/upload.js') }}"></script>
+
+{% endblock %}

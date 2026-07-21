@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="result-section">
+
+    <div class="result-card fade-in">
+
+        <div class="result-header">
+
+            <h1>
+                <i class="fa-solid fa-brain"></i>
+                AI Prediction
+            </h1>
+
+            <p>
+                Your uploaded music has been analyzed successfully.
+            </p>
+
+        </div>
+
+
+        <!-- Predicted Genre -->
+
+        <div class="genre-box">
+
+            <i class="fa-solid fa-music genre-icon"></i>
+
+            <h2>{{ genre|capitalize }}</h2>
+
+        </div>
+
+
+        <!-- Confidence -->
+
+        <div class="confidence-box">
+
+            <h3>Confidence Score</h3>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    data-value="{{ confidence }}"
+                    style="width:0%;">
+
+                </div>
+
+            </div>
+
+            <span class="confidence-value">
+
+                {{ confidence }}%
+
+            </span>
+
+        </div>
+
+
+        <!-- Top Predictions -->
+
+        <div class="top-predictions">
+
+            <h3>
+
+                <i class="fa-solid fa-ranking-star"></i>
+
+                Top Predictions
+
+            </h3>
+
+            {% for item in top_predictions %}
+
+            <div class="prediction-row">
+
+                <div class="prediction-title">
+
+                    {% if loop.index == 1 %}
+                        🥇
+                    {% elif loop.index == 2 %}
+                        🥈
+                    {% else %}
+                        🥉
+                    {% endif %}
+
+                    {{ item.genre|capitalize }}
+
+                </div>
+
+                <div class="small-progress">
+
+                    <div
+                        class="small-bar"
+                        data-value="{{ item.confidence }}"
+                        style="width:0%;">
+
+                    </div>
+
+                </div>
+
+                <span>
+
+                    {{ item.confidence }}%
+
+                </span>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+
+        <a href="/" class="predict-btn">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Predict Another Song</span>
+        </a>
+
+    </div>
+
+</section>
+
+{% block scripts %}
+
+<script src="{{ url_for('static',
+filename='js/result.js') }}"></script>
+
+{% endblock %}
+{% endblock %}
